@@ -12,9 +12,9 @@ interface ChipProps {
 
 const chipConfig: Record<ChipVariant, { bg: string; dot: string; text: string; defaultLabel: string }> = {
   online: {
-    bg: '#E8F9F0',
+    bg: colors.successSoft,
     dot: colors.success,
-    text: '#1A7A47',
+    text: colors.success,
     defaultLabel: 'Online',
   },
   yourTurn: {
@@ -24,15 +24,15 @@ const chipConfig: Record<ChipVariant, { bg: string; dot: string; text: string; d
     defaultLabel: 'Your Turn',
   },
   waiting: {
-    bg: '#FEF3E2',
+    bg: colors.saffronSoft,
     dot: colors.warning,
-    text: '#9A6000',
+    text: colors.ink,
     defaultLabel: 'Waiting',
   },
   notConnected: {
-    bg: '#FDE8E8',
+    bg: colors.errorSoft,
     dot: colors.error,
-    text: '#9B1C1C',
+    text: colors.error,
     defaultLabel: 'Not Connected',
   },
 };

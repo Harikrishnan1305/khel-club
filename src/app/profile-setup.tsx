@@ -91,7 +91,7 @@ export default function ProfileSetupScreen() {
       const store = useUserStore.getState();
       store.completeOnboarding(name.trim(), username.trim(), photoUri, avatarId);
       setSaving(false);
-      router.replace('/home');
+      router.replace('/(tabs)/home');
     });
   };
 
@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    backgroundColor: '#FEF6E7',
+    backgroundColor: colors.saffronSoft,
     borderRadius: radius.md,
     padding: spacing.md,
     borderLeftWidth: 3,

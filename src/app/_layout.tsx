@@ -42,8 +42,21 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: colors.ivory },
           animation: 'fade',
         }}
-      />
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="welcome" />
+        <Stack.Screen name="sign-in" />
+        <Stack.Screen name="otp" />
+        <Stack.Screen name="profile-setup" />
+        <Stack.Screen name="showcase" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="room/[code]" />
+        <Stack.Screen name="matchmaking" />
+        <Stack.Screen name="game/carrom" />
+        <Stack.Screen name="game/chess" />
+        <Stack.Screen name="game/snakes" />
+        <Stack.Screen name="game/ludo" />
+      </Stack>
     </>
   );
 }
-

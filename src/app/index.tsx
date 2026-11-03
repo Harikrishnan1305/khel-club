@@ -36,7 +36,7 @@ export default function SplashScreen() {
       // we check again inside the route decision below
       const currentState = useUserStore.getState();
       if (currentState._hydrated && currentState.isOnboarded) {
-        router.replace('/home');
+        router.replace('/(tabs)/home');
       } else {
         router.replace('/welcome');
       }

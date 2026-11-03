@@ -35,7 +35,7 @@ const variantStyles: Record<
   soft: {
     container: { backgroundColor: colors.surfaceAlt },
     text: { color: colors.violet },
-    pressedBg: '#E5E1FA',
+    pressedBg: colors.lavender,
   },
   outline: {
     container: {
@@ -49,7 +49,7 @@ const variantStyles: Record<
   dark: {
     container: { backgroundColor: colors.textPrimary },
     text: { color: colors.white },
-    pressedBg: '#0D0D1A',
+    pressedBg: colors.deepViolet,
   },
   disabled: {
     container: { backgroundColor: colors.border },
