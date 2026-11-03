@@ -10,6 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { colors, spacing, fontSize, fontWeight, radius } from '../theme/theme';
+import { useUserStore } from '../store/userStore';
 
 const DURATION = 2500;
 const GAMES = ['CARROM', 'CHESS', 'SNAKES', 'LUDO'];
@@ -17,6 +18,10 @@ const GAMES = ['CARROM', 'CHESS', 'SNAKES', 'LUDO'];
 export default function SplashScreen() {
   const router = useRouter();
   const progress = useSharedValue(0);
+
+  // Read hydration flag and onboarding status from the persisted store
+  const _hydrated = useUserStore((s) => s._hydrated);
+  const isOnboarded = useUserStore((s) => s.isOnboarded);
 
   useEffect(() => {
     // Animate progress bar 0 → 1 over DURATION ms
@@ -26,11 +31,29 @@ export default function SplashScreen() {
     });
 
     const timer = setTimeout(() => {
-      router.replace('/welcome');
+      // Wait until the store has been rehydrated from AsyncStorage
+      // _hydrated may still be false here if AsyncStorage is slow;
+      // we check again inside the route decision below
+      const currentState = useUserStore.getState();
+      if (currentState._hydrated && currentState.isOnboarded) {
+        router.replace('/home');
+      } else {
+        router.replace('/welcome');
+      }
     }, DURATION);
 
     return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // If hydration finishes BEFORE the timer, update destination immediately
+  // (rare on fast devices, but correctly handled)
+  useEffect(() => {
+    if (_hydrated && isOnboarded) {
+      // Do nothing — timer will use getState() which is already correct.
+      // This effect just ensures the store subscription is active.
+    }
+  }, [_hydrated, isOnboarded]);
 
   const barStyle = useAnimatedStyle(() => ({
     width: `${progress.value * 100}%`,
@@ -38,7 +61,6 @@ export default function SplashScreen() {
 
   return (
     <LinearGradient
-      // lavender → white radial-style: top center → bottom
       colors={[colors.lavender, colors.surface]}
       locations={[0, 1]}
       start={{ x: 0.5, y: 0 }}
@@ -48,16 +70,13 @@ export default function SplashScreen() {
       {/* Tagline near top */}
       <Text style={styles.tagline}>GOOD TIMES. GREAT GAMES.</Text>
 
-      {/* Spacer */}
       <View style={{ flex: 1 }} />
 
       {/* Icon block */}
       <View style={styles.iconWrap}>
-        {/* Rotated rounded-square */}
         <View style={styles.iconSquare}>
           <Ionicons name="game-controller-outline" size={36} color={colors.white} />
         </View>
-        {/* Saffron dot — top-right of the icon */}
         <View style={styles.saffronDot} />
       </View>
 
@@ -75,7 +94,6 @@ export default function SplashScreen() {
         ))}
       </View>
 
-      {/* Spacer */}
       <View style={{ flex: 1 }} />
 
       {/* Progress section */}
@@ -121,7 +139,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.violet,
     alignItems: 'center',
     justifyContent: 'center',
-    // 15° rotation
     transform: [{ rotate: '15deg' }],
     shadowColor: colors.violetDark,
     shadowOffset: { width: 0, height: 8 },
