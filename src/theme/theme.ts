@@ -9,6 +9,8 @@ export const colors = {
   ivory: '#FAFAF7',        // main screen background
   surface: '#FFFFFF',      // cards, sheets
   surfaceAlt: '#F3F1FB',   // subtle tinted surface (violet-tinted)
+  lavender: '#EDE8FC',     // soft lavender — gradient, progress track
+  saffron: '#F5A623',      // saffron accent dot
 
   // Text
   textPrimary: '#1A1A2E',  // headings

@@ -1,222 +1,208 @@
-import React, { useState } from 'react';
-import { ScrollView, View, Text, StyleSheet, SectionList } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, fontSize, fontWeight } from '../theme/theme';
-import { Button } from '../components/Button';
-import { Input } from '../components/Input';
-import { OtpInput } from '../components/OtpInput';
-import { Chip } from '../components/Chip';
-import { Card } from '../components/Card';
-import { GameCard } from '../components/GameCard';
-import { Avatar } from '../components/Avatar';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
+import { useRouter } from 'expo-router';
+import { colors, spacing, fontSize, fontWeight, radius } from '../theme/theme';
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+const DURATION = 2500;
+const GAMES = ['CARROM', 'CHESS', 'SNAKES', 'LUDO'];
+
+export default function SplashScreen() {
+  const router = useRouter();
+  const progress = useSharedValue(0);
+
+  useEffect(() => {
+    // Animate progress bar 0 → 1 over DURATION ms
+    progress.value = withTiming(1, {
+      duration: DURATION,
+      easing: Easing.out(Easing.quad),
+    });
+
+    const timer = setTimeout(() => {
+      router.replace('/welcome');
+    }, DURATION);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const barStyle = useAnimatedStyle(() => ({
+    width: `${progress.value * 100}%`,
+  }));
+
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      {children}
-    </View>
-  );
-}
-
-function Row({ children, gap = spacing.sm }: { children: React.ReactNode; gap?: number }) {
-  return <View style={[styles.row, { gap }]}>{children}</View>;
-}
-
-export default function Showcase() {
-  const [otp, setOtp] = useState('');
-  const [inputVal, setInputVal] = useState('');
-  const [errorVal, setErrorVal] = useState('bad@input');
-
-  return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={styles.content}
-      showsVerticalScrollIndicator={false}
+    <LinearGradient
+      // lavender → white radial-style: top center → bottom
+      colors={[colors.lavender, colors.surface]}
+      locations={[0, 1]}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
+      style={styles.container}
     >
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.appName}>Khel Club</Text>
-        <Text style={styles.headerSub}>Component Showcase</Text>
+      {/* Tagline near top */}
+      <Text style={styles.tagline}>GOOD TIMES. GREAT GAMES.</Text>
+
+      {/* Spacer */}
+      <View style={{ flex: 1 }} />
+
+      {/* Icon block */}
+      <View style={styles.iconWrap}>
+        {/* Rotated rounded-square */}
+        <View style={styles.iconSquare}>
+          <Ionicons name="game-controller-outline" size={36} color={colors.white} />
+        </View>
+        {/* Saffron dot — top-right of the icon */}
+        <View style={styles.saffronDot} />
       </View>
 
-      {/* ── BUTTONS ── */}
-      <Section title="Button">
-        <Button
-          label="Play Now"
-          variant="primary"
-          leftIcon={<Ionicons name="game-controller" size={18} color={colors.white} />}
-        />
-        <Button label="Join Club" variant="soft" />
-        <Button
-          label="View Profile"
-          variant="outline"
-          leftIcon={<Ionicons name="person-outline" size={16} color={colors.violet} />}
-        />
-        <Button label="Dark Action" variant="dark" />
-        <Button label="Disabled" variant="disabled" disabled />
-        <Button label="Loading…" variant="primary" loading />
-      </Section>
+      {/* App name */}
+      <Text style={styles.appName}>Khel Club</Text>
+      <Text style={styles.appSub}>Your people. Your games.</Text>
 
-      {/* ── INPUT ── */}
-      <Section title="Input">
-        <Input
-          label="Phone number"
-          placeholder="+91 98765 43210"
-          keyboardType="phone-pad"
-          value={inputVal}
-          onChangeText={setInputVal}
-          helper="We'll send an OTP to this number"
-        />
-        <Input
-          label="Focused state"
-          placeholder="Tap here…"
-          autoFocus={false}
-        />
-        <Input
-          label="Error state"
-          placeholder="Enter value"
-          value={errorVal}
-          onChangeText={setErrorVal}
-          error="This field has an error"
-        />
-      </Section>
+      {/* Game labels row */}
+      <View style={styles.gamesRow}>
+        {GAMES.map((g, i) => (
+          <React.Fragment key={g}>
+            <Text style={styles.gameLabel}>{g}</Text>
+            {i < GAMES.length - 1 && <View style={styles.gameDot} />}
+          </React.Fragment>
+        ))}
+      </View>
 
-      {/* ── OTP ── */}
-      <Section title="OTP Input">
-        <OtpInput value={otp} onChange={setOtp} />
-        {otp.length > 0 && (
-          <Text style={styles.otpPreview}>Entered: {otp}</Text>
-        )}
-      </Section>
+      {/* Spacer */}
+      <View style={{ flex: 1 }} />
 
-      {/* ── CHIP ── */}
-      <Section title="Chip">
-        <Row>
-          <Chip variant="online" />
-          <Chip variant="yourTurn" />
-          <Chip variant="waiting" />
-          <Chip variant="notConnected" />
-        </Row>
-      </Section>
+      {/* Progress section */}
+      <View style={styles.progressSection}>
+        <Text style={styles.progressLabel}>Setting the board for good times</Text>
+        <View style={styles.progressTrack}>
+          <Animated.View style={[styles.progressFill, barStyle]} />
+        </View>
+      </View>
 
-      {/* ── AVATAR ── */}
-      <Section title="Avatar">
-        <Row gap={spacing.md}>
-          <Avatar size="sm" initials="AK" />
-          <Avatar size="md" initials="RK" online />
-          <Avatar size="lg" initials="MV" online />
-        </Row>
-        <Row gap={spacing.md}>
-          <Avatar size="sm" initials="???" />
-          <Avatar size="md" initials="Priya" online={false} />
-          <Avatar size="lg" initials="Rohit" online />
-        </Row>
-      </Section>
-
-      {/* ── CARD ── */}
-      <Section title="Card">
-        <Card>
-          <Text style={styles.cardText}>
-            This is a Card component — paper background, radius 20, soft shadow.
-          </Text>
-          <View style={{ marginTop: spacing.md }}>
-            <Chip variant="online" />
-          </View>
-        </Card>
-        <Card style={{ marginTop: spacing.sm }}>
-          <Row>
-            <Avatar size="md" initials="AR" online />
-            <View style={{ flex: 1 }}>
-              <Text style={styles.cardName}>Arjun Ravi</Text>
-              <Chip variant="yourTurn" />
-            </View>
-          </Row>
-        </Card>
-      </Section>
-
-      {/* ── GAME CARD ── */}
-      <Section title="GameCard">
-        <GameCard
-          title="Carrom"
-          subtitle="2–4 players"
-          playingCount={1240}
-          onPlay={() => {}}
-        />
-        <GameCard
-          title="Chess"
-          subtitle="2 players • Rapid"
-          playingCount={843}
-          onPlay={() => {}}
-        />
-        <GameCard
-          title="Snakes & Ladders"
-          subtitle="2–4 players"
-          playingCount={519}
-          onPlay={() => {}}
-        />
-        <GameCard
-          title="Ludo"
-          subtitle="2–4 players"
-          playingCount={2310}
-          onPlay={() => {}}
-        />
-      </Section>
-
-      <View style={{ height: spacing.xxl }} />
-    </ScrollView>
+      {/* Footer */}
+      <Text style={styles.footer}>MADE FOR THE WAY WE PLAY</Text>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.ivory },
-  content: { padding: spacing.md, paddingTop: spacing.xxl },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: 64,
+    paddingBottom: 40,
+    paddingHorizontal: spacing.xl,
+  },
 
-  header: { marginBottom: spacing.xl, alignItems: 'center' },
+  tagline: {
+    fontSize: fontSize.xs,
+    fontFamily: 'NunitoSans_700Bold',
+    fontWeight: fontWeight.bold,
+    color: colors.violetLight,
+    letterSpacing: 2.5,
+    textAlign: 'center',
+  },
+
+  iconWrap: {
+    position: 'relative',
+    marginBottom: spacing.lg,
+  },
+  iconSquare: {
+    width: 88,
+    height: 88,
+    borderRadius: 22,
+    backgroundColor: colors.violet,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // 15° rotation
+    transform: [{ rotate: '15deg' }],
+    shadowColor: colors.violetDark,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  saffronDot: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: colors.saffron,
+    borderWidth: 2,
+    borderColor: colors.surface,
+  },
+
   appName: {
     fontSize: fontSize.display,
-    fontWeight: fontWeight.extrabold,
     fontFamily: 'NunitoSans_800ExtraBold',
-    color: colors.violet,
-  },
-  headerSub: {
-    fontSize: fontSize.md,
-    fontFamily: 'NunitoSans_400Regular',
-    color: colors.textMuted,
-    marginTop: spacing.xs,
-  },
-
-  section: { marginBottom: spacing.xl, gap: spacing.sm },
-  sectionTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: fontWeight.bold,
-    fontFamily: 'NunitoSans_700Bold',
-    color: colors.textPrimary,
+    fontWeight: fontWeight.extrabold,
+    color: colors.violetDark,
+    letterSpacing: -0.5,
     marginBottom: spacing.xs,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.violet,
-    paddingLeft: spacing.sm,
   },
-
-  row: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' },
-
-  otpPreview: {
-    textAlign: 'center',
-    color: colors.textMuted,
-    fontFamily: 'NunitoSans_400Regular',
-    fontSize: fontSize.sm,
-  },
-
-  cardText: {
-    fontFamily: 'NunitoSans_400Regular',
+  appSub: {
     fontSize: fontSize.md,
-    color: colors.textSecondary,
+    fontFamily: 'NunitoSans_400Regular',
+    color: colors.textMuted,
+    marginBottom: spacing.lg,
   },
-  cardName: {
+
+  gamesRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  gameLabel: {
+    fontSize: fontSize.xs,
     fontFamily: 'NunitoSans_700Bold',
     fontWeight: fontWeight.bold,
-    fontSize: fontSize.md,
-    color: colors.textPrimary,
-    marginBottom: 4,
+    color: colors.violet,
+    letterSpacing: 1.5,
+  },
+  gameDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: colors.border,
+  },
+
+  progressSection: {
+    width: '100%',
+    gap: spacing.sm,
+    marginBottom: spacing.lg,
+  },
+  progressLabel: {
+    fontSize: fontSize.sm,
+    fontFamily: 'NunitoSans_400Regular',
+    color: colors.textMuted,
+    textAlign: 'center',
+  },
+  progressTrack: {
+    height: 6,
+    borderRadius: radius.full,
+    backgroundColor: colors.lavender,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: radius.full,
+    backgroundColor: colors.violet,
+  },
+
+  footer: {
+    fontSize: fontSize.xs,
+    fontFamily: 'NunitoSans_600SemiBold',
+    color: colors.textMuted,
+    letterSpacing: 2,
+    textAlign: 'center',
   },
 });
