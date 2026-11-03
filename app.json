@@ -21,10 +21,17 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "scheme": "khelclub",
     "plugins": [
-      "expo-router",
+      [
+        "expo-router",
+        {
+          "root": "src/app"
+        }
+      ],
       "expo-audio",
-      "expo-font"
+      "expo-font",
+      "expo-splash-screen"
     ]
   }
 }

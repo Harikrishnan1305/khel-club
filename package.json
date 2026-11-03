@@ -1,9 +1,10 @@
 {
   "name": "khel-club",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "dependencies": {
     "@expo-google-fonts/nunito-sans": "^0.4.2",
+    "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "chess.js": "^1.4.0",
     "expo": "~58.0.22",
@@ -13,6 +14,7 @@
     "expo-haptics": "~58.0.7",
     "expo-linking": "~58.0.15",
     "expo-router": "~58.0.29",
+    "expo-splash-screen": "~58.0.12",
     "expo-status-bar": "~58.0.4",
     "matter-js": "^0.20.0",
     "react": "19.3.0",
@@ -35,5 +37,10 @@
     "ios": "expo start --ios",
     "web": "expo start --web"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "router": {
+      "origin": false
+    }
+  }
 }
