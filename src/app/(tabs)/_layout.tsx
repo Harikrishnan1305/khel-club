@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter, usePathname } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, fontSize, fontWeight, spacing, sizes, radius } from '../../theme/theme';
 
@@ -21,33 +21,60 @@ const TABS: TabConfig[] = [
   { name: 'profile',     label: 'Profile',     icon: 'person-outline',          iconActive: 'person'         },
 ];
 
-function KhelTabBar({ state, descriptors, navigation }: any) {
+// Route name -> URL. Navigation goes through expo-router, not the
+// react-navigation `navigation` prop (which can be undefined in the custom bar).
+const TAB_PATHS: Record<TabName, '/home' | '/games' | '/friends' | '/leaderboard' | '/profile'> = {
+  home: '/home',
+  games: '/games',
+  friends: '/friends',
+  leaderboard: '/leaderboard',
+  profile: '/profile',
+};
+
+interface KhelTabBarProps {
+  // Optional on purpose: the bar must still work if the navigator omits it.
+  state?: { index: number; routes: { name: string }[] };
+}
+
+function KhelTabBar({ state }: KhelTabBarProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // 1) Prefer the navigator state when it is provided.
+  const stateName = state?.routes?.[state.index]?.name;
+  // 2) Otherwise fall back to the URL: "/games" -> "games".
+  const pathName = pathname.split('/').filter(Boolean).pop();
+  const activeName = stateName ?? pathName;
+
   return (
     <View style={styles.bar}>
-      {state.routes.map((route: any, index: number) => {
-        const tab = TABS[index];
-        const focused = state.index === index;
-        const { options } = descriptors[route.key];
-        const label = tab?.label ?? route.name;
+      {TABS.map((tab) => {
+        const focused = activeName === tab.name;
 
         const onPress = () => {
-          const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-          if (!focused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
+          if (!focused) {
+            router.navigate(TAB_PATHS[tab.name]);
           }
         };
 
         return (
-          <Pressable key={route.key} style={styles.tabItem} onPress={onPress} accessibilityRole="button">
+          <Pressable
+            key={tab.name}
+            style={styles.tabItem}
+            onPress={onPress}
+            accessibilityRole="button"
+            accessibilityState={{ selected: focused }}
+            accessibilityLabel={tab.label}
+          >
             <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
               <Ionicons
-                name={focused ? (tab?.iconActive ?? tab?.icon) : (tab?.icon ?? 'ellipse-outline')}
+                name={focused ? tab.iconActive : tab.icon}
                 size={22}
                 color={focused ? colors.violet : colors.textMuted}
               />
             </View>
             <Text style={[styles.tabLabel, focused && styles.tabLabelActive]}>
-              {label}
+              {tab.label}
             </Text>
           </Pressable>
         );
@@ -59,7 +86,7 @@ function KhelTabBar({ state, descriptors, navigation }: any) {
 export default function TabsLayout() {
   return (
     <Tabs
-      tabBar={(props) => <KhelTabBar {...props} />}
+      tabBar={(props) => <KhelTabBar state={props?.state} />}
       screenOptions={{ headerShown: false }}
     >
       <Tabs.Screen name="home" />

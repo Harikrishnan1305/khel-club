@@ -51,16 +51,18 @@ export const useUserStore = create<UserState & UserActions>()(
       setProfile: (updates) => set((s) => ({ ...s, ...updates })),
 
       completeOnboarding: (name, username, photoUri, avatarId) =>
-        set({
+        set((s) => ({
           name,
           username,
           photoUri,
           avatarId,
-          coins: 500,
-          points: 0,
-          clubId: generateClubId(),
+          // First-time onboarding gets the welcome bonus + a new Club ID.
+          // Re-running this screen later (Edit profile) keeps existing values.
+          coins: s.isOnboarded ? s.coins : 500,
+          points: s.isOnboarded ? s.points : 0,
+          clubId: s.clubId ?? generateClubId(),
           isOnboarded: true,
-        }),
+        })),
 
       setHydrated: () => set({ _hydrated: true }),
 

@@ -157,3 +157,104 @@ export const DUMMY_POPULAR: DummyPopularGame[] = [
   { id: 'ludo',   title: 'Ludo',   tagline: "The club's favourite",    onlineCount: '2.4k' },
   { id: 'carrom', title: 'Carrom', tagline: 'A perfect evening flick', onlineCount: '1.2k' },
 ];
+
+// ─── Friends tab ─────────────────────────────────────────────────────────────
+export interface DummyClubFriend {
+  id: string;
+  name: string;
+  initials: string;
+  online: boolean;
+  status: string; // e.g. "Online · Ready to play"
+}
+
+export const DUMMY_CLUB_FRIENDS: DummyClubFriend[] = [
+  { id: 'meera',  name: 'Meera',  initials: 'ME', online: true,  status: 'Online · Ready to play' },
+  { id: 'arjun',  name: 'Arjun',  initials: 'AR', online: true,  status: 'Online · In the lobby' },
+  { id: 'kabir',  name: 'Kabir',  initials: 'KA', online: true,  status: 'Online · Ready to play' },
+  { id: 'ishaan', name: 'Ishaan', initials: 'IS', online: false, status: 'Offline · Seen 2h ago' },
+  { id: 'nila',   name: 'Nila',   initials: 'NI', online: false, status: 'Offline · Seen yesterday' },
+  { id: 'dev',    name: 'Dev',    initials: 'DE', online: false, status: 'Offline · Seen yesterday' },
+];
+
+export interface DummyPlayedWith {
+  id: string;
+  name: string;
+  initials: string;
+  detail: string;
+}
+
+export const DUMMY_PLAYED_WITH: DummyPlayedWith[] = [
+  { id: 'riya',  name: 'Riya',  initials: 'RI', detail: 'Ludo · Today' },
+  { id: 'sahil', name: 'Sahil', initials: 'SA', detail: 'Carrom · Yesterday' },
+];
+
+// ─── Leaderboard tab ─────────────────────────────────────────────────────────
+export interface DummyLeaderEntry {
+  id: string;
+  rank: number;
+  name: string;
+  initials: string;
+  points: number;
+}
+
+export const DUMMY_PODIUM: DummyLeaderEntry[] = [
+  { id: 'rohan', rank: 1, name: 'Rohan', initials: 'RO', points: 4820 },
+  { id: 'meera', rank: 2, name: 'Meera', initials: 'ME', points: 4160 },
+  { id: 'arjun', rank: 3, name: 'Arjun', initials: 'AR', points: 3940 },
+];
+
+export const DUMMY_LEADERBOARD_ROWS: DummyLeaderEntry[] = [
+  { id: 'kabir',  rank: 4, name: 'Kabir',  initials: 'KA', points: 3720 },
+  { id: 'nila',   rank: 5, name: 'Nila',   initials: 'NI', points: 3480 },
+  { id: 'ishaan', rank: 6, name: 'Ishaan', initials: 'IS', points: 3290 },
+];
+
+export const DUMMY_FRIENDS_LEADERBOARD: DummyLeaderEntry[] = [
+  { id: 'meera', rank: 1, name: 'Meera', initials: 'ME', points: 4160 },
+  { id: 'arjun', rank: 2, name: 'Arjun', initials: 'AR', points: 3940 },
+  { id: 'kabir', rank: 3, name: 'Kabir', initials: 'KA', points: 3720 },
+];
+
+export const USER_RANK = 18;
+export const USER_POINTS_FALLBACK = 2480;
+
+// ─── Profile tab ─────────────────────────────────────────────────────────────
+export const DUMMY_PROFILE_STATS = { played: 120, wins: 72, winRate: 60 };
+
+export interface DummyGameHistory {
+  id: GameId;
+  title: string;
+  imageKey: string;
+  played: number;
+  wins: number;
+  winRate: number; // percent
+}
+
+export const DUMMY_GAME_HISTORY: DummyGameHistory[] = [
+  { id: 'carrom', title: 'Carrom',           imageKey: 'card_carrom', played: 40, wins: 26, winRate: 65 },
+  { id: 'chess',  title: 'Chess',            imageKey: 'card_chess',  played: 30, wins: 18, winRate: 60 },
+  { id: 'snakes', title: 'Snakes & Ladders', imageKey: 'card_snakes', played: 20, wins: 10, winRate: 50 },
+  { id: 'ludo',   title: 'Ludo',             imageKey: 'card_ludo',   played: 30, wins: 18, winRate: 60 },
+];
+
+export interface DummyLatestMatch {
+  id: string;
+  title: string;
+  detail: string;
+  result: 'Won' | 'Lost';
+}
+
+export const DUMMY_LATEST_MATCHES: DummyLatestMatch[] = [
+  { id: '1', title: 'Carrom vs Meera',  detail: 'Yesterday · 25–18',    result: 'Won'  },
+  { id: '2', title: 'Chess vs Kabir',   detail: '30 Oct · Checkmate',   result: 'Won'  },
+  { id: '3', title: 'Ludo with friends', detail: '29 Oct · Finished 3rd', result: 'Lost' },
+];
+
+// ─── Settings ────────────────────────────────────────────────────────────────
+export type LanguageId = 'en' | 'ta' | 'hi';
+
+export const DUMMY_LANGUAGES: { id: LanguageId; label: string }[] = [
+  { id: 'en', label: 'English' },
+  { id: 'ta', label: 'Tamil · தமிழ்' },
+  { id: 'hi', label: 'Hindi · हिन्दी' },
+];

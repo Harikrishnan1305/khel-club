@@ -50,6 +50,7 @@ export default function RootLayout() {
         <Stack.Screen name="profile-setup" />
         <Stack.Screen name="showcase" />
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="settings" />
         <Stack.Screen name="room/[code]" />
         <Stack.Screen name="matchmaking" />
         <Stack.Screen name="game/carrom" />

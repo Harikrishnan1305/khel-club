@@ -10,7 +10,7 @@ import {
   ImageSourcePropType,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { colors, spacing, fontSize, fontWeight, radius, sizes } from '../../theme/theme';
 import { useUserStore } from '../../store/userStore';
@@ -124,7 +124,7 @@ export default function HomeScreen() {
         {/* ── Stat pills ── */}
         <View style={s.statRow}>
           <View style={[s.statPill, { backgroundColor: colors.saffronSoft }]}>
-            <Ionicons name="logo-bitcoin" size={15} color={colors.saffron} />
+            <MaterialCommunityIcons name="circle-multiple-outline" size={16} color={colors.saffron} />
             <Text style={s.statText}>{coins} coins</Text>
           </View>
           <View style={[s.statPill, { backgroundColor: colors.lavender }]}>
@@ -273,8 +273,8 @@ const s = StyleSheet.create({
   greetingName: { fontSize: fontSize.lg, fontFamily: 'NunitoSans_800ExtraBold', fontWeight: fontWeight.extrabold, color: colors.ink },
   bellBtn: {
     width: 40, height: 40, borderRadius: radius.sm, backgroundColor: colors.paper,
+    borderWidth: 1, borderColor: colors.border,
     alignItems: 'center', justifyContent: 'center',
-    shadowColor: colors.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.07, shadowRadius: 4, elevation: 2,
     position: 'relative',
   },
   bellDot: { position: 'absolute', top: 8, right: 8, width: 8, height: 8, borderRadius: 4, backgroundColor: colors.saffron, borderWidth: 1.5, borderColor: colors.paper },
