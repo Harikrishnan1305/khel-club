@@ -106,14 +106,17 @@ export default function MatchmakingScreen() {
     }, 1000);
 
     const matchTimeout = setTimeout(() => {
-      router.replace(`/game/${gameId}`);
+      router.replace({
+        pathname: `/game/${gameId}`,
+        params: { players: String(playersCount), mode: 'bots' },
+      });
     }, 6000);
 
     return () => {
       clearInterval(interval);
       clearTimeout(matchTimeout);
     };
-  }, [gameId, router]);
+  }, [gameId, playersCount, router]);
 
   const outerRingStyle = useAnimatedStyle(() => ({
     transform: [{ scale: outerPulse.value }],

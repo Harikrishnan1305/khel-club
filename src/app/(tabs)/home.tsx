@@ -162,7 +162,7 @@ export default function HomeScreen() {
             <Image
               source={BANNER_IMAGE}
               style={s.heroImage}
-              resizeMode="cover"
+              resizeMode="contain"
             />
           </View>
         </View>
@@ -316,15 +316,16 @@ const s = StyleSheet.create({
   heroBody: { fontSize: fontSize.sm, fontFamily: 'NunitoSans_400Regular', color: colors.lavender, lineHeight: 20 },
   heroCta: { fontSize: fontSize.sm, fontFamily: 'NunitoSans_700Bold', fontWeight: fontWeight.bold, color: colors.paper, marginTop: spacing.xs },
   // Image wrapper — absolute, pushed to the right, slightly overflows top/bottom for the rotate clip effect
+  // Fixed-size container (image is transparent, so no rounding/background here).
+  // It bleeds past the right/bottom edges; the banner's overflow:hidden + rounded
+  // corner clips it. Left edge stays at ~55% so it never reaches the text.
   heroImageWrap: {
     position: 'absolute',
-    right: -12,               // let the right edge bleed slightly for natural clipping
-    top: -16,
-    bottom: -16,
-    width: '52%',             // wider than needed so rotation doesn't leave gaps
+    width: 200,
+    height: 160,
+    right: -44,
+    bottom: -22,
     transform: [{ rotate: '8deg' }],
-    borderRadius: radius.card,
-    overflow: 'hidden',
   },
   heroImage: {
     width: '100%',

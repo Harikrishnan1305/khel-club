@@ -69,9 +69,23 @@ export default function GamesLobbyScreen() {
   }, [selectedGameId, game.playerOptions, playersCount]);
 
   const handleFindMatch = () => {
+    if (selectedGameId === 'snakes' || selectedGameId === 'ludo') {
+      router.push({
+        pathname: selectedGameId === 'ludo' ? '/game/ludo' : '/game/snakes',
+        params: { players: String(playersCount), mode: 'bots' },
+      });
+      return;
+    }
     router.push({
       pathname: '/matchmaking',
       params: { game: selectedGameId, players: String(playersCount) },
+    });
+  };
+
+  const handlePlayVsComputer = () => {
+    router.push({
+      pathname: `/game/${selectedGameId}`,
+      params: { players: String(playersCount), mode: 'bots' },
     });
   };
 
@@ -236,6 +250,23 @@ export default function GamesLobbyScreen() {
               <Ionicons name="flash-outline" size={18} color={colors.paper} />
             }
           />
+
+          {(selectedGameId === 'snakes' ||
+            selectedGameId === 'ludo' ||
+            selectedGameId === 'chess') && (
+            <Button
+              label="Play vs computer"
+              variant="soft"
+              onPress={handlePlayVsComputer}
+              leftIcon={
+                <Ionicons
+                  name="hardware-chip-outline"
+                  size={18}
+                  color={colors.violet}
+                />
+              }
+            />
+          )}
         </Card>
 
         {/* ── Play With Friends card (Lavender) ── */}

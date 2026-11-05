@@ -22,6 +22,7 @@ export interface UserState {
 export interface UserActions {
   setProfile: (updates: Partial<Pick<UserState, 'name' | 'username' | 'photoUri' | 'avatarId'>>) => void;
   completeOnboarding: (name: string, username: string, photoUri: string | null, avatarId: string | null) => void;
+  addRewards: (pointsDelta: number, coinsDelta: number) => void;
   setHydrated: () => void;
   reset: () => void;
 }
@@ -62,6 +63,12 @@ export const useUserStore = create<UserState & UserActions>()(
           points: s.isOnboarded ? s.points : 0,
           clubId: s.clubId ?? generateClubId(),
           isOnboarded: true,
+        })),
+
+      addRewards: (pointsDelta, coinsDelta) =>
+        set((s) => ({
+          points: s.points + pointsDelta,
+          coins: s.coins + coinsDelta,
         })),
 
       setHydrated: () => set({ _hydrated: true }),

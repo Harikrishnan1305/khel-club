@@ -63,6 +63,19 @@ export const gameColors = {
     white:     '#F8EBD8',
     queen:     '#C34F54',
   },
+  snakes: {
+    cellMint:    '#E4EDE4',
+    cellPeach:   '#EFE3DC',
+    cellCream:   '#F4EFE1',
+    cellSand:    '#EAE5D9',
+    gridLine:    '#DDD7C8',
+    boardBorder: '#D5CFC0',
+    winCell:     '#E5BF55',
+    ladder:      '#A86523',
+    snakeGreen:  '#5A9E7C',
+    snakePurple: '#A678C8',
+    snakeOrange: '#D5895C',
+  },
 } as const;
 
 // ─── Spacing ─────────────────────────────────────────────────────────────────

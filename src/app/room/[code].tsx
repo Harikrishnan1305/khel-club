@@ -77,7 +77,10 @@ export default function PrivateRoomScreen() {
 
   const handleStartGame = () => {
     if (!kabirJoined) return;
-    router.replace(`/game/${gameId}`);
+    router.replace({
+      pathname: `/game/${gameId}`,
+      params: { players: '4', mode: 'bots' },
+    });
   };
 
   const handleTryJoinAgain = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { Tabs, useRouter, usePathname } from 'expo-router';
+import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, fontSize, fontWeight, spacing, sizes, radius } from '../../theme/theme';
 
@@ -21,45 +21,36 @@ const TABS: TabConfig[] = [
   { name: 'profile',     label: 'Profile',     icon: 'person-outline',          iconActive: 'person'         },
 ];
 
-// Route name -> URL. Navigation goes through expo-router, not the
-// react-navigation `navigation` prop (which can be undefined in the custom bar).
-const TAB_PATHS: Record<TabName, '/home' | '/games' | '/friends' | '/leaderboard' | '/profile'> = {
-  home: '/home',
-  games: '/games',
-  friends: '/friends',
-  leaderboard: '/leaderboard',
-  profile: '/profile',
-};
+// This expo-router build ships react-navigation v8's bottom-tabs. Its custom
+// `tabBar` receives { state, descriptors, emitter, navigateToTab, insets } and
+// NO `navigation` prop (see BottomTabView.renderTabBar and the built-in
+// BottomTabBar.onPress). The old `navigation.emit(...)` therefore threw
+// "Cannot read property 'emit' of undefined". We follow the same contract the
+// built-in bar uses: emit `tabPress` on `emitter`, then call `navigateToTab`.
+type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
 
-interface KhelTabBarProps {
-  // Optional on purpose: the bar must still work if the navigator omits it.
-  state?: { index: number; routes: { name: string }[] };
-}
-
-function KhelTabBar({ state }: KhelTabBarProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-
-  // 1) Prefer the navigator state when it is provided.
-  const stateName = state?.routes?.[state.index]?.name;
-  // 2) Otherwise fall back to the URL: "/games" -> "games".
-  const pathName = pathname.split('/').filter(Boolean).pop();
-  const activeName = stateName ?? pathName;
-
+function KhelTabBar({ state, emitter, navigateToTab }: TabBarProps) {
   return (
     <View style={styles.bar}>
-      {TABS.map((tab) => {
-        const focused = activeName === tab.name;
+      {state.routes.map((route, index) => {
+        const tab = TABS.find((t) => t.name === route.name);
+        if (!tab) return null;
+        const focused = state.index === index;
 
         const onPress = () => {
-          if (!focused) {
-            router.navigate(TAB_PATHS[tab.name]);
+          const event = emitter.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+          if (!focused && !event.defaultPrevented) {
+            navigateToTab(route.key);
           }
         };
 
         return (
           <Pressable
-            key={tab.name}
+            key={route.key}
             style={styles.tabItem}
             onPress={onPress}
             accessibilityRole="button"
@@ -86,7 +77,7 @@ function KhelTabBar({ state }: KhelTabBarProps) {
 export default function TabsLayout() {
   return (
     <Tabs
-      tabBar={(props) => <KhelTabBar state={props?.state} />}
+      tabBar={(props) => <KhelTabBar {...props} />}
       screenOptions={{ headerShown: false }}
     >
       <Tabs.Screen name="home" />
